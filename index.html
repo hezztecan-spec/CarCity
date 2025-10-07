@@ -1,12 +1,613 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Мой первый сайт</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Drive - Каршеринг</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: white;
+            color: #667eea;
+            border: 3px solid #667eea;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .category-content {
+            display: none;
+        }
+
+        .category-content.active {
+            display: block;
+        }
+
+        .class-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .class-title {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .cars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .car-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .car-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .car-image {
+            width: 100%;
+            height: 200px;
+            background: #ddd;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            color: #666;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .car-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .car-year {
+            color: #667eea;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .car-info {
+            color: #555;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .car-price {
+            font-size: 1.8em;
+            color: #764ba2;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .rent-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .rent-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-title {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .modal-text {
+            color: #333;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .modal-phone {
+            color: #764ba2;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .close-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .close-btn:hover {
+            background: #764ba2;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .cars-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-btn {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+
+            .modal-content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Привет! Это мой сайт на GitHub Pages 🚀</h1>
-  <p>Создан с любовью и без затрат.</p>
+    <div class="container">
+        <header>
+            <h1>🚗 City Drive</h1>
+            <p class="subtitle">Премиальный каршеринг в вашем городе</p>
+        </header>
+
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="showCategory('passenger')">Легковые автомобили</button>
+            <button class="tab-btn" onclick="showCategory('truck')">Грузовые автомобили</button>
+            <button class="tab-btn" onclick="showCategory('electric')">Электромобили</button>
+        </div>
+
+        <!-- ЛЕГКОВЫЕ АВТОМОБИЛИ -->
+        <div id="passenger" class="category-content active">
+            <!-- Эконом класс -->
+            <div class="class-section">
+                <h2 class="class-title">💰 Эконом класс</h2>
+                <div class="cars-grid">
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">Hyundai Solaris</div>
+                        <div class="car-year">2021 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Автомат<br>
+                            <strong>Топливо:</strong> Бензин<br>
+                            <strong>Объем двигателя:</strong> 1.6л<br>
+                            <strong>Количество мест:</strong> 5
+                        </div>
+                        <div class="car-price">10,000 ₸/сутки</div>
+                        <button class="rent-btn" onclick="openModal('Hyundai Solaris', '10,000 ₸')">Забронировать</button>
+                    </div>
+
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">Kia Rio</div>
+                        <div class="car-year">2022 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Механика<br>
+                            <strong>Топливо:</strong> Бензин<br>
+                            <strong>Объем двигателя:</strong> 1.4л<br>
+                            <strong>Количество мест:</strong> 5
+                        </div>
+                        <div class="car-price">12,000 ₸/сутки</div>
+                        <button class="rent-btn" onclick="openModal('Kia Rio', '12,000 ₸')">Забронировать</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Комфорт класс -->
+            <div class="class-section">
+                <h2 class="class-title">⭐ Комфорт класс</h2>
+                <div class="cars-grid">
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">Toyota Camry</div>
+                        <div class="car-year">2023 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Автомат<br>
+                            <strong>Топливо:</strong> Бензин<br>
+                            <strong>Объем двигателя:</strong> 2.5л<br>
+                            <strong>Количество мест:</strong> 5
+                        </div>
+                        <div class="car-price">18,000 ₸/сутки</div>
+                        <button class="rent-btn" onclick="openModal('Toyota Camry', '18,000 ₸')">Забронировать</button>
+                    </div>
+
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">Volkswagen Passat</div>
+                        <div class="car-year">2022 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Автомат<br>
+                            <strong>Топливо:</strong> Дизель<br>
+                            <strong>Объем двигателя:</strong> 2.0л<br>
+                            <strong>Количество мест:</strong> 5
+                        </div>
+                        <div class="car-price">22,000 ₸/сутки</div>
+                        <button class="rent-btn" onclick="openModal('Volkswagen Passat', '22,000 ₸')">Забронировать</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Подписка -->
+            <div class="class-section">
+                <h2 class="class-title">👑 С подпиской (безлимит)</h2>
+                <div class="cars-grid">
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">BMW 5 Series</div>
+                        <div class="car-year">2024 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Автомат<br>
+                            <strong>Топливо:</strong> Бензин<br>
+                            <strong>Объем двигателя:</strong> 3.0л<br>
+                            <strong>Количество мест:</strong> 5
+                        </div>
+                        <div class="car-price">100,000 ₸/месяц</div>
+                        <button class="rent-btn" onclick="openModal('BMW 5 Series', '100,000 ₸')">Оформить подписку</button>
+                    </div>
+
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">Mercedes-Benz E-Class</div>
+                        <div class="car-year">2024 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Автомат<br>
+                            <strong>Топливо:</strong> Бензин<br>
+                            <strong>Объем двигателя:</strong> 2.0л<br>
+                            <strong>Количество мест:</strong> 5
+                        </div>
+                        <div class="car-price">130,000 ₸/месяц</div>
+                        <button class="rent-btn" onclick="openModal('Mercedes-Benz E-Class', '130,000 ₸')">Оформить подписку</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ГРУЗОВЫЕ АВТОМОБИЛИ -->
+        <div id="truck" class="category-content">
+            <!-- Эконом класс -->
+            <div class="class-section">
+                <h2 class="class-title">💰 Эконом класс</h2>
+                <div class="cars-grid">
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">ГАЗель Next</div>
+                        <div class="car-year">2021 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Механика<br>
+                            <strong>Топливо:</strong> Дизель<br>
+                            <strong>Грузоподъемность:</strong> 1.5 тонны<br>
+                            <strong>Объем кузова:</strong> 12 м³
+                        </div>
+                        <div class="car-price">15,000 ₸/сутки</div>
+                        <button class="rent-btn" onclick="openModal('ГАЗель Next', '15,000 ₸')">Забронировать</button>
+                    </div>
+
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">Hyundai Porter</div>
+                        <div class="car-year">2022 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Механика<br>
+                            <strong>Топливо:</strong> Дизель<br>
+                            <strong>Грузоподъемность:</strong> 1 тонна<br>
+                            <strong>Объем кузова:</strong> 10 м³
+                        </div>
+                        <div class="car-price">18,000 ₸/сутки</div>
+                        <button class="rent-btn" onclick="openModal('Hyundai Porter', '18,000 ₸')">Забронировать</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Комфорт класс -->
+            <div class="class-section">
+                <h2 class="class-title">⭐ Комфорт класс</h2>
+                <div class="cars-grid">
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">Isuzu NQR</div>
+                        <div class="car-year">2023 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Механика<br>
+                            <strong>Топливо:</strong> Дизель<br>
+                            <strong>Грузоподъемность:</strong> 3.5 тонны<br>
+                            <strong>Объем кузова:</strong> 20 м³
+                        </div>
+                        <div class="car-price">35,000 ₸/сутки</div>
+                        <button class="rent-btn" onclick="openModal('Isuzu NQR', '35,000 ₸')">Забронировать</button>
+                    </div>
+
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">Mercedes-Benz Sprinter</div>
+                        <div class="car-year">2023 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Автомат<br>
+                            <strong>Топливо:</strong> Дизель<br>
+                            <strong>Грузоподъемность:</strong> 2 тонны<br>
+                            <strong>Объем кузова:</strong> 15 м³
+                        </div>
+                        <div class="car-price">45,000 ₸/сутки</div>
+                        <button class="rent-btn" onclick="openModal('Mercedes-Benz Sprinter', '45,000 ₸')">Забронировать</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Подписка -->
+            <div class="class-section">
+                <h2 class="class-title">👑 С подпиской (безлимит)</h2>
+                <div class="cars-grid">
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">МАЗ 5440</div>
+                        <div class="car-year">2024 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Механика<br>
+                            <strong>Топливо:</strong> Дизель<br>
+                            <strong>Грузоподъемность:</strong> 20 тонн<br>
+                            <strong>Тип:</strong> Седельный тягач
+                        </div>
+                        <div class="car-price">100,000 ₸/месяц</div>
+                        <button class="rent-btn" onclick="openModal('МАЗ 5440', '100,000 ₸')">Оформить подписку</button>
+                    </div>
+
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">Volvo FH16</div>
+                        <div class="car-year">2024 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Автомат<br>
+                            <strong>Топливо:</strong> Дизель<br>
+                            <strong>Грузоподъемность:</strong> 25 тонн<br>
+                            <strong>Тип:</strong> Седельный тягач
+                        </div>
+                        <div class="car-price">150,000 ₸/месяц</div>
+                        <button class="rent-btn" onclick="openModal('Volvo FH16', '150,000 ₸')">Оформить подписку</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ЭЛЕКТРОМОБИЛИ -->
+        <div id="electric" class="category-content">
+            <div class="class-section">
+                <h2 class="class-title">⚡ Электромобили</h2>
+                <div class="cars-grid">
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">Tesla Model 3</div>
+                        <div class="car-year">2023 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Автомат<br>
+                            <strong>Топливо:</strong> Электричество<br>
+                            <strong>Запас хода:</strong> 560 км<br>
+                            <strong>Количество мест:</strong> 5
+                        </div>
+                        <div class="car-price">25,000 ₸/сутки</div>
+                        <button class="rent-btn" onclick="openModal('Tesla Model 3', '25,000 ₸')">Забронировать</button>
+                    </div>
+
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">Nissan Leaf</div>
+                        <div class="car-year">2022 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Автомат<br>
+                            <strong>Топливо:</strong> Электричество<br>
+                            <strong>Запас хода:</strong> 385 км<br>
+                            <strong>Количество мест:</strong> 5
+                        </div>
+                        <div class="car-price">18,000 ₸/сутки</div>
+                        <button class="rent-btn" onclick="openModal('Nissan Leaf', '18,000 ₸')">Забронировать</button>
+                    </div>
+
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">BMW iX3</div>
+                        <div class="car-year">2024 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Автомат<br>
+                            <strong>Топливо:</strong> Электричество<br>
+                            <strong>Запас хода:</strong> 460 км<br>
+                            <strong>Количество мест:</strong> 5
+                        </div>
+                        <div class="car-price">30,000 ₸/сутки</div>
+                        <button class="rent-btn" onclick="openModal('BMW iX3', '30,000 ₸')">Забронировать</button>
+                    </div>
+
+                    <div class="car-card">
+                        <div class="car-image">Место для фото автомобиля</div>
+                        <div class="car-name">Tesla Model S</div>
+                        <div class="car-year">2024 год</div>
+                        <div class="car-info">
+                            <strong>Коробка передач:</strong> Автомат<br>
+                            <strong>Топливо:</strong> Электричество<br>
+                            <strong>Запас хода:</strong> 650 км<br>
+                            <strong>Количество мест:</strong> 5
+                        </div>
+                        <div class="car-price">120,000 ₸/месяц (подписка)</div>
+                        <button class="rent-btn" onclick="openModal('Tesla Model S', '120,000 ₸')">Оформить подписку</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Подробности бронирования</h2>
+            <p class="modal-text"><strong>Автомобиль:</strong> <span id="modalCar"></span></p>
+            <p class="modal-text"><strong>Цена:</strong> <span id="modalPrice"></span></p>
+            <p class="modal-text">Для бронирования свяжитесь с нами:</p>
+            <div class="modal-phone">📞 +7 705 202 36 14</div>
+            <p class="modal-text">Наш менеджер ответит на все ваши вопросы!</p>
+            <button class="close-btn" onclick="closeModal()">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        function showCategory(category) {
+            // Скрыть все категории
+            const contents = document.querySelectorAll('.category-content');
+            contents.forEach(c => c.classList.remove('active'));
+
+            // Убрать активность с кнопок
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(b => b.classList.remove('active'));
+
+            // Показать выбранную категорию
+            document.getElementById(category).classList.add('active');
+
+            // Активировать нажатую кнопку
+            event.target.classList.add('active');
+        }
+
+        function openModal(carName, price) {
+            document.getElementById('modalCar').textContent = carName;
+            document.getElementById('modalPrice').textContent = price;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Закрытие модального окна при клике вне его
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
