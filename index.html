@@ -257,13 +257,45 @@
 
         .map-placeholder {
             background: #2a2f4a;
-            height: 300px;
+            height: 400px;
             border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             margin-bottom: 20px;
-            border: 2px dashed #667eea;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .map-marker {
+            position: absolute;
+            font-size: 32px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            animation: markerPulse 2s ease-in-out infinite;
+        }
+
+        .map-marker:hover {
+            transform: scale(1.3);
+        }
+
+        @keyframes markerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .map-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+            z-index: 100;
+            white-space: nowrap;
         }
 
         .chat-container {
@@ -339,6 +371,85 @@
             font-size: 14px;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1f3a;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            animation: modalSlide 0.3s;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #8b95c9;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            background: #2a2f4a;
+            color: white;
+            font-size: 16px;
+        }
+
+        .success-message {
+            background: #10b981;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
         @media (max-width: 768px) {
             h1 { font-size: 36px; }
             .tagline { font-size: 18px; }
@@ -388,10 +499,14 @@
         <div class="content-section active" id="parking">
             <h2 class="section-title">🅿️ Умный поиск парковок</h2>
             <div class="map-placeholder">
-                <div style="text-align: center;">
-                    <div style="font-size: 48px;">🗺️</div>
-                    <p>Интерактивная карта парковок</p>
+                <div class="map-container" id="parkingMap">
+                    <div class="map-marker" style="top: 30%; left: 40%;" data-name="ТРЦ Достык Плаза" data-distance="0.5 км" data-spots="12">🅿️</div>
+                    <div class="map-marker" style="top: 50%; left: 60%;" data-name="Mega Center" data-distance="1.2 км" data-spots="28">🅿️</div>
+                    <div class="map-marker" style="top: 70%; left: 30%;" data-name="City Mall" data-distance="2.3 км" data-spots="0">🅿️</div>
+                    <div class="map-marker" style="top: 20%; left: 70%;" data-name="Парковка у метро" data-distance="0.8 км" data-spots="7">🅿️</div>
+                    <div class="map-marker" style="top: 60%; left: 20%;" data-name="Крытая парковка" data-distance="1.5 км" data-spots="15">🅿️</div>
                 </div>
+                <div class="map-tooltip" id="parkingTooltip"></div>
             </div>
             
             <div class="card">
@@ -435,10 +550,14 @@
         <div class="content-section" id="fuel">
             <h2 class="section-title">⛽ Карта АЗС и цены</h2>
             <div class="map-placeholder">
-                <div style="text-align: center;">
-                    <div style="font-size: 48px;">🗺️</div>
-                    <p>Карта заправок с ценами</p>
+                <div class="map-container" id="fuelMap">
+                    <div class="map-marker" style="top: 25%; left: 35%;" data-name="КазМунайГаз АЗС №45" data-distance="0.8 км" data-price="245₸">⛽</div>
+                    <div class="map-marker" style="top: 55%; left: 65%;" data-name="Helios АЗС" data-distance="1.5 км" data-price="250₸">⛽</div>
+                    <div class="map-marker" style="top: 75%; left: 25%;" data-name="Sinooil АЗС №12" data-distance="2.1 км" data-price="242₸">⛽</div>
+                    <div class="map-marker" style="top: 40%; left: 75%;" data-name="Газпром АЗС" data-distance="1.8 км" data-price="248₸">⛽</div>
+                    <div class="map-marker" style="top: 15%; left: 55%;" data-name="Neste АЗС" data-distance="0.9 км" data-price="255₸">⛽</div>
                 </div>
+                <div class="map-tooltip" id="fuelTooltip"></div>
             </div>
 
             <div class="card">
@@ -483,7 +602,7 @@
                         <small style="color: #8b95c9;">⭐ 4.8 • 1.2 км • Открыто до 20:00</small><br>
                         <small style="color: #10b981;">Диагностика, ремонт, ТО</small>
                     </div>
-                    <button class="btn-action">Записаться</button>
+                    <button class="btn-action" onclick="openBooking('АвтоМастер Профи')">Записаться</button>
                 </div>
             </div>
 
@@ -494,7 +613,7 @@
                         <small style="color: #8b95c9;">⭐ 4.9 • 0.7 км • Круглосуточно</small><br>
                         <small style="color: #10b981;">Шиномонтаж, замена масла</small>
                     </div>
-                    <button class="btn-action">Записаться</button>
+                    <button class="btn-action" onclick="openBooking('Экспресс Сервис 24/7')">Записаться</button>
                 </div>
             </div>
 
@@ -505,7 +624,7 @@
                         <small style="color: #8b95c9;">⭐ 5.0 • 3.5 км • Открыто до 19:00</small><br>
                         <small style="color: #10b981;">Мойка, полировка, химчистка</small>
                     </div>
-                    <button class="btn-action">Записаться</button>
+                    <button class="btn-action" onclick="openBooking('Детейлинг Центр Блеск')">Записаться</button>
                 </div>
             </div>
         </div>
@@ -521,7 +640,7 @@
                     <div class="ad-details">V70 • 3.5L • 45,000 км • Белый</div>
                     <div class="price" style="margin-top: 10px;">12,500,000₸</div>
                 </div>
-                <button class="btn-action">Подробнее</button>
+                <button class="btn-action" onclick="openCarDetails('Toyota Camry 2020', '12,500,000₸')">Подробнее</button>
             </div>
 
             <div class="card ad-card">
@@ -531,7 +650,7 @@
                     <div class="ad-details">2.0T • 2.0L • 62,000 км • Черный</div>
                     <div class="price" style="margin-top: 10px;">9,800,000₸</div>
                 </div>
-                <button class="btn-action">Подробнее</button>
+                <button class="btn-action" onclick="openCarDetails('Honda Accord 2019', '9,800,000₸')">Подробнее</button>
             </div>
 
             <div class="card ad-card">
@@ -541,7 +660,7 @@
                     <div class="ad-details">Turbo • 1.6L • 28,000 км • Серебристый</div>
                     <div class="price" style="margin-top: 10px;">11,200,000₸</div>
                 </div>
-                <button class="btn-action">Подробнее</button>
+                <button class="btn-action" onclick="openCarDetails('Hyundai Sonata 2021', '11,200,000₸')">Подробнее</button>
             </div>
         </div>
 
@@ -569,6 +688,66 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Модальные окна -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('bookingModal')">&times;</button>
+            <h2 style="margin-bottom: 20px;">📅 Запись в сервис</h2>
+            <div class="form-group">
+                <label>Сервис:</label>
+                <input type="text" id="serviceName" readonly>
+            </div>
+            <div class="form-group">
+                <label>Ваше имя:</label>
+                <input type="text" placeholder="Введите имя">
+            </div>
+            <div class="form-group">
+                <label>Телефон:</label>
+                <input type="tel" placeholder="+7 (___) ___-__-__">
+            </div>
+            <div class="form-group">
+                <label>Дата и время:</label>
+                <input type="datetime-local">
+            </div>
+            <div class="form-group">
+                <label>Вид работ:</label>
+                <select>
+                    <option>Диагностика</option>
+                    <option>Замена масла</option>
+                    <option>Шиномонтаж</option>
+                    <option>ТО</option>
+                    <option>Ремонт</option>
+                </select>
+            </div>
+            <button class="btn-action" style="width: 100%; padding: 15px;" onclick="submitBooking()">Записаться</button>
+            <div class="success-message" id="bookingSuccess">✅ Заявка отправлена! Мы свяжемся с вами в ближайшее время.</div>
+        </div>
+    </div>
+
+    <div class="modal" id="carModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('carModal')">&times;</button>
+            <h2 style="margin-bottom: 20px;">🚗 Подробности об автомобиле</h2>
+            <div style="text-align: center; font-size: 80px; margin: 20px 0;">🚙</div>
+            <h3 id="carTitle" style="text-align: center; margin-bottom: 10px;"></h3>
+            <div class="price" style="text-align: center; margin-bottom: 20px;" id="carPrice"></div>
+            <div class="form-group">
+                <label>Ваше имя:</label>
+                <input type="text" placeholder="Введите имя">
+            </div>
+            <div class="form-group">
+                <label>Телефон:</label>
+                <input type="tel" placeholder="+7 (___) ___-__-__">
+            </div>
+            <div class="form-group">
+                <label>Сообщение продавцу:</label>
+                <textarea rows="3" placeholder="Здравствуйте, интересует ваш автомобиль..."></textarea>
+            </div>
+            <button class="btn-action" style="width: 100%; padding: 15px;" onclick="submitCarInquiry()">Связаться с продавцом</button>
+            <div class="success-message" id="carSuccess">✅ Сообщение отправлено продавцу!</div>
         </div>
     </div>
 
