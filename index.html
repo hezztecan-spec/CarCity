@@ -1,54 +1,4 @@
-function rentCar(carName, price, icon) {
-    rentedCar = { name: carName, price: price, icon: icon };
-    document.getElementById('trackedCarName').textContent = carName;
-    document.getElementById('trackedCarPrice').textContent = price;
-    document.getElementById('carIcon').textContent = icon;
-    document.getElementById('trackingSection').style.display = 'block';
-    
-    // Создаем карту отслеживания
-    setTimeout(() => {
-        if (!trackingMap) {
-            const kyzylorda = [44.8526, 65.5089];
-            trackingMap = L.map('trackingMap').setView(kyzylorda, 14);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(trackingMap);
-
-            // Добавляем маркер автомобиля
-            const carIcon = L.divIcon({
-                html: icon,
-                className: 'custom-icon',
-                iconSize: [40, 40]
-            });
-            carMarker = L.marker(kyzylorda, { icon: carIcon }).addTo(trackingMap)
-                .bindPopup(`<b>${carName}</b><br>📍 ул. Абая, 123<br>Скорость: 45 км/ч`);
-
-            // Анимация движения
-            let offset = 0;
-            setInterval(() => {
-                offset += 0.0001;
-                const newPos = [44.8526 + offset, 65.5089 + offset];
-                if (carMarker) carMarker.setLatLng(newPos);
-            }, 2000);
-        }
-        if (carMarker) {
-            const currentIcon = L.divIcon({
-                html: icon,
-                className: 'custom-icon',
-                iconSize: [40, 40]
-            });
-            carMarker.setIcon(currentIcon);
-            carMarker.getPopup().setContent(`<b>${carName}</b><br>📍 ул. Абая, 123<br>Скорость: 45 км/ч`);
-        }
-        trackingMap.invalidateSize();
-    }, 300);
-    
-    document.getElementById('trackingSection').scrollIntoView({ behavior: 'smooth' });
-    
-    setTimeout(() => {
-        alert('✅ Автомобиль ' + carName + ' успешно арендован!\n\nТеперь вы можете отслеживать его местоположение в реальном времени.');
-    }, 500);
-}<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -623,7 +573,7 @@ h1 {
                 <small style="color: #8b95c9;">⭐ 4.8 • 1.2 км • Открыто до 20:00</small><br>
                 <small style="color: #10b981;">Диагностика, ремонт, ТО</small>
             </div>
-            <button class="btn-action">Записаться</button>
+            <button class="btn-action" onclick="bookService('АвтоМастер Профи', 'Диагностика, ремонт, ТО')">Записаться</button>
         </div>
     </div>
 
@@ -634,7 +584,7 @@ h1 {
                 <small style="color: #8b95c9;">⭐ 4.9 • 0.7 км • Круглосуточно</small><br>
                 <small style="color: #10b981;">Шиномонтаж, замена масла</small>
             </div>
-            <button class="btn-action">Записаться</button>
+            <button class="btn-action" onclick="bookService('Экспресс Сервис 24/7', 'Шиномонтаж, замена масла')">Записаться</button>
         </div>
     </div>
 
@@ -645,7 +595,7 @@ h1 {
                 <small style="color: #8b95c9;">⭐ 5.0 • 3.5 км • Открыто до 19:00</small><br>
                 <small style="color: #10b981;">Мойка, полировка, химчистка</small>
             </div>
-            <button class="btn-action">Записаться</button>
+            <button class="btn-action" onclick="bookService('Детейлинг Центр \"Блеск\"', 'Мойка, полировка, химчистка')">Записаться</button>
         </div>
     </div>
 </div>
@@ -1035,6 +985,62 @@ document.getElementById('chatInput').addEventListener('keypress', function(e) {
     }
 });
 
+function rentCar(carName, price, icon) {
+    rentedCar = { name: carName, price: price, icon: icon };
+    document.getElementById('trackedCarName').textContent = carName;
+    document.getElementById('trackedCarPrice').textContent = price;
+    document.getElementById('carIcon').textContent = icon;
+    document.getElementById('trackingSection').style.display = 'block';
+    
+    // Создаем карту отслеживания
+    setTimeout(() => {
+        if (!trackingMap) {
+            const kyzylorda = [44.8526, 65.5089];
+            trackingMap = L.map('trackingMap').setView(kyzylorda, 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(trackingMap);
+
+            // Добавляем маркер автомобиля
+            const carIcon = L.divIcon({
+                html: icon,
+                className: 'custom-icon',
+                iconSize: [40, 40]
+            });
+            carMarker = L.marker(kyzylorda, { icon: carIcon }).addTo(trackingMap)
+                .bindPopup(`<b>${carName}</b><br>📍 ул. Абая, 123<br>Скорость: 45 км/ч`);
+
+            // Анимация движения
+            let offset = 0;
+            setInterval(() => {
+                offset += 0.0001;
+                const newPos = [44.8526 + offset, 65.5089 + offset];
+                if (carMarker) carMarker.setLatLng(newPos);
+            }, 2000);
+        } else {
+            // If map already exists, just update the car marker and its popup
+            if (carMarker) {
+                const currentIcon = L.divIcon({
+                    html: icon,
+                    className: 'custom-icon',
+                    iconSize: [40, 40]
+                });
+                carMarker.setIcon(currentIcon);
+                carMarker.setLatLng([44.8526, 65.5089]); // Reset position or keep current
+                carMarker.getPopup().setContent(`<b>${carName}</b><br>📍 ул. Абая, 123<br>Скорость: 45 км/ч`);
+                trackingMap.setView([44.8526, 65.5089], 14); // Center map on car
+            }
+        }
+        trackingMap.invalidateSize();
+    }, 300);
+    
+    document.getElementById('trackingSection').scrollIntoView({ behavior: 'smooth' });
+    
+    setTimeout(() => {
+        alert('✅ Автомобиль ' + carName + ' успешно арендован!\n\nТеперь вы можете отслеживать его местоположение в реальном времени.');
+    }, 500);
+}
+
 function showHistory() {
     alert('📊 История поездок:\n\n' +
           '08.10.2025 | 15:30-18:45\n' +
@@ -1065,6 +1071,10 @@ function endRental() {
 
 function orderRoadsideAssistance(serviceType) {
     alert(`✅ Услуга "${serviceType}" заказана!\n\nНаш специалист уже в пути и свяжется с вами в течение 10 минут.`);
+}
+
+function bookService(serviceName, serviceDescription) {
+    alert(`✅ Вы успешно записались на услугу "${serviceName}"!\n\nОписание: ${serviceDescription}\nМы свяжемся с вами в ближайшее время для подтверждения.`);
 }
 </script>
 </body>
